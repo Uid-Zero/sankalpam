@@ -75,10 +75,15 @@ class MasaPakshaTithiCalculator:
     @staticmethod
     def getJulianDayAtSunrise(year, month, day, latitude, longitude):
         julian_day = swe.julday(year, month, day)
-        sunrise_info = swe.rise_trans(julian_day, swe.SUN, geopos=[longitude, latitude, 0], rsmi=swe.CALC_RISE)[0]
+        sunrise_info = swe.rise_trans(julian_day, swe.SUN, geopos=[longitude, latitude, 0], rsmi=swe.CALC_RISE)
+
+        if len(sunrise_info) > 0 and isinstance(sunrise_info[0], tuple):
+            sunrise_time = sunrise_info[0][0]  # Get the sunrise time in hours
+        else:
+            sunrise_time = sunrise_info[0]  # Get the sunrise time directly if not a tuple
 
         # Return the Julian day adjusted for the sunrise time
-        julian_day_at_sunrise = julian_day + (sunrise_info[0] / 24.0)  # Convert hours to Julian day fraction
+        julian_day_at_sunrise = julian_day + (sunrise_time / 24.0)  # Convert hours to Julian day fraction
         return julian_day_at_sunrise
 
     @staticmethod
